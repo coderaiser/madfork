@@ -1,0 +1,59 @@
+{
+  "name": "madfork",
+  "version": "1.0.0",
+  "description": "run madrun in monorepo",
+  "type": "module",
+  "main": "bin/madfork.js",
+  "bin": {
+    "madfork": "bin/madfork.js"
+  },
+  "scripts": {
+    "lint": "madrun lint",
+    "fix:lint": "madrun fix:lint",
+    "test": "madrun test",
+    "watch:test": "madrun watch:test",
+    "watcher": "madrun watcher",
+    "coverage": "madrun coverage",
+    "report": "madrun report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderaiser/madfork.git"
+  },
+  "keywords": [
+    "madfork",
+    "cli",
+    "commond",
+    "run",
+    "tool",
+    "commandline",
+    "command",
+    "madrun"
+  ],
+  "author": "coderaiser <mnemonic.enemy@gmail.com> (http://coderaiser.github.io/)",
+  "bugs": {
+    "url": "https://github.com/coderaiser/madfork/issues"
+  },
+  "homepage": "https://github.com/coderaiser/madfork",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "picomatch": "^4.0.2",
+    "try-catch": "^4.0.7",
+    "yargs-parser": "^22.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.0",
+    "eslint-plugin-putout": "^31.1.1",
+    "madrun": "^13.0.1",
+    "nodemon": "^3.1.9",
+    "putout": "^42.2.3",
+    "superc8": "^12.3.1",
+    "supertape": "^13.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
