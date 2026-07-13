@@ -40,7 +40,35 @@ test('madfork: execSync', async (t) => {
             2,
             'pipe',
         ],
-        cwd: '/workspaces.spec.js',
+        cwd: '/lib/workspaces.spec.js',
+    }];
+    
+    t.calledWith(execSync, expected);
+    t.end();
+});
+
+test('madfork: execSync: *', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/',
+        ['lib/*'],
+    ]);
+    
+    const argv = ['build'];
+    const execSync = stub();
+    
+    await madfork(argv, {
+        execSync,
+        readWorkspaces,
+    });
+    
+    const expected = ['redrun build', {
+        stdio: [
+            0,
+            1,
+            2,
+            'pipe',
+        ],
+        cwd: '/lib/workspaces.spec.js',
     }];
     
     t.calledWith(execSync, expected);
@@ -94,7 +122,7 @@ test('madfork: execSync: pattern', async (t) => {
             2,
             'pipe',
         ],
-        cwd: '/home/workspaces.spec.js',
+        cwd: '/home/lib/workspaces.spec.js',
     }];
     
     t.calledWith(execSync, expected);
@@ -137,7 +165,7 @@ test('madfork: console.log', async (t) => {
         readWorkspaces,
     });
     
-    const dir = '/home/workspaces.spec.js';
+    const dir = '/home/lib/workspaces.spec.js';
     
     t.calledWith(log, [dir]);
     t.end();

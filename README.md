@@ -10,9 +10,7 @@
 [CoverageURL]: https://coveralls.io/github/coderaiser/madfork?branch=master
 [CoverageIMGURL]: https://coveralls.io/repos/coderaiser/madfork/badge.svg?branch=master&service=github
 
-CLI tool to run command in multiple subdirectories.
-
-![Refork](https://github.com/coderaiser/madfork/raw/master/img/madfork.svg "Refork")
+CLI tool to run [redrun](https://github.com/coderaiser/redrun) in multiple subdirectories.
 
 ## Install
 
