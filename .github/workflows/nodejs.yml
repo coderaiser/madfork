@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NAME: madfork
     strategy:
       matrix:
         node-version:
@@ -25,13 +27,22 @@ jobs:
       - name: Install Redrun
         run: bun i redrun madrun -g --no-save
       - name: Install
-        run: bun i -f --no-save
+        run: bun i --no-save
       - name: Init Madrun
         run: madrun --init
       - name: Lint
-        run: redrun lint
+        run: redrun fix:lint
+      - name: Typos
+        uses: coderaiser/typos.ai@v1.1.8
+        with:
+          key: ${{ secrets.TYPOS_AI_KEY }}
+      - name: Commit fixes
+        uses: EndBug/add-and-commit@v10
+        continue-on-error: true
+        with:
+          message: "chore: ${{ env.NAME }}: actions: lint ☘️"
       - name: Coverage
-        run: redrun coverage report
+        run: redrun coverage
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         continue-on-error: true
