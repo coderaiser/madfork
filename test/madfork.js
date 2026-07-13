@@ -165,7 +165,7 @@ test('madfork: console.log', async (t) => {
         readWorkspaces,
     });
     
-    const dir = '/home/lib/workspaces.spec.js';
+    const dir = '✅ /home/lib/workspaces.spec.js';
     
     t.calledWith(log, [dir]);
     t.end();
@@ -225,7 +225,7 @@ test('madfork: no command', async (t) => {
         readWorkspaces,
     });
     
-    t.calledWith(log, ['nothing to do, exit']);
+    t.calledWith(log, ['🏝️nothing to do, exit']);
     t.end();
 });
 
