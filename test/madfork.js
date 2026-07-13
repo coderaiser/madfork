@@ -1,4 +1,5 @@
 import test, {stub} from 'supertape';
+import {tryToCatch} from 'try-to-catch';
 import {madfork} from '../lib/madfork.js';
 import info from '../package.json' with {
     type: 'json',
@@ -6,11 +7,11 @@ import info from '../package.json' with {
 
 const {version} = info;
 
-test('madfork: version', (t) => {
+test('madfork: version', async (t) => {
     const log = stub();
     const argv = ['-v'];
     
-    madfork(argv, {
+    await madfork(argv, {
         log,
     });
     
@@ -18,47 +19,35 @@ test('madfork: version', (t) => {
     t.end();
 });
 
-test('madfork: readdirSync', (t) => {
-    const readdirSync = stub().returns([]);
+test('madfork: execSync', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/',
+        ['lib'],
+    ]);
     
-    const argv = ['ls'];
-    
-    madfork(argv, {
-        readdirSync,
-    });
-    
-    t.calledWith(readdirSync, ['.']);
-    t.end();
-});
-
-test('madfork: execSync', (t) => {
-    const readdirSync = stub().returns(['dir']);
-    const cwd = stub().returns('/home/abc');
-    const argv = ['ls'];
-    
+    const argv = ['build'];
     const execSync = stub();
     
-    madfork(argv, {
+    await madfork(argv, {
         execSync,
-        readdirSync,
-        cwd,
+        readWorkspaces,
     });
     
-    const expected = ['ls', {
+    const expected = ['redrun build', {
         stdio: [
             0,
             1,
             2,
             'pipe',
         ],
-        cwd: '/home/abc/dir',
+        cwd: '/workspaces.spec.js',
     }];
     
     t.calledWith(execSync, expected);
     t.end();
 });
 
-test('madfork: execSync: pattern: not match', (t) => {
+test('madfork: execSync: pattern: not match', async (t) => {
     const readdirSync = stub().returns(['dir']);
     const cwd = stub().returns('/home/abc');
     
@@ -70,7 +59,7 @@ test('madfork: execSync: pattern: not match', (t) => {
     
     const execSync = stub();
     
-    madfork(argv, {
+    await madfork(argv, {
         readdirSync,
         cwd,
     });
@@ -79,94 +68,143 @@ test('madfork: execSync: pattern: not match', (t) => {
     t.end();
 });
 
-test('madfork: execSync: pattern', (t) => {
-    const readdirSync = stub().returns(['hello-world']);
-    const cwd = stub().returns('/home/abc');
+test('madfork: execSync: pattern', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/home',
+        ['lib'],
+    ]);
+    
     const execSync = stub();
     
     const argv = [
-        'ls',
+        'build',
         '-p',
-        'hello*',
+        'work*',
     ];
     
-    madfork(argv, {
-        readdirSync,
+    await madfork(argv, {
         execSync,
-        cwd,
+        readWorkspaces,
     });
     
-    const expected = ['ls', {
+    const expected = ['redrun build', {
         stdio: [
             0,
             1,
             2,
             'pipe',
         ],
-        cwd: '/home/abc/hello-world',
+        cwd: '/home/workspaces.spec.js',
     }];
     
     t.calledWith(execSync, expected);
     t.end();
 });
 
-test('madfork: execSync: error', (t) => {
-    const readdirSync = stub().returns(['dir']);
+test('madfork: execSync: error', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/home',
+        ['lib'],
+    ]);
+    
     const execSync = stub().throws(Error('hello'));
-    const cwd = stub().returns('/home/abc');
     const logError = stub();
     
     const argv = ['ls'];
     
-    madfork(argv, {
-        readdirSync,
+    await madfork(argv, {
         execSync,
-        cwd,
         logError,
+        readWorkspaces,
     });
     
     t.calledWith(logError, ['hello']);
     t.end();
 });
 
-test('madfork: console.log', (t) => {
-    const readdirSync = stub().returns(['dir']);
-    const cwd = stub().returns('/home/abc');
+test('madfork: console.log', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/home',
+        ['lib'],
+    ]);
+    
     const log = stub();
     
     const argv = ['ls'];
     
-    madfork(argv, {
+    await madfork(argv, {
         log,
-        readdirSync,
-        cwd,
+        readWorkspaces,
     });
     
-    const dir = '/home/abc/dir';
+    const dir = '/home/workspaces.spec.js';
     
     t.calledWith(log, [dir]);
     t.end();
 });
 
-test('madfork: no command', (t) => {
-    const readdirSync = stub().returns(['dir']);
+test('madfork: workspaces: no', async (t) => {
     const cwd = stub().returns('/home/abc');
     const log = stub();
     
-    madfork([], {
+    const readWorkspaces = stub().returns([
+        '',
+        [],
+    ]);
+    
+    const argv = ['ls'];
+    
+    await madfork(argv, {
         log,
-        readdirSync,
         cwd,
+        readWorkspaces,
+    });
+    
+    t.notCalled(log);
+    t.end();
+});
+
+test('madfork: workspaces', async (t) => {
+    const cwd = stub().returns('/home/abc');
+    const log = stub();
+    
+    const readWorkspaces = stub().returns([
+        '/',
+        ['packages'],
+    ]);
+    
+    const argv = ['ls'];
+    
+    const [error] = await tryToCatch(madfork, argv, {
+        log,
+        cwd,
+        readWorkspaces,
+    });
+    
+    t.equal(error.code, 'ENOENT');
+    t.end();
+});
+
+test('madfork: no command', async (t) => {
+    const log = stub();
+    const readWorkspaces = stub().returns([
+        '/',
+        ['packages'],
+    ]);
+    
+    await madfork([], {
+        log,
+        readWorkspaces,
     });
     
     t.calledWith(log, ['nothing to do, exit']);
     t.end();
 });
 
-test('madfork: --help', (t) => {
+test('madfork: --help', async (t) => {
     const log = stub();
     
-    madfork(['--help'], {
+    await madfork(['--help'], {
         log,
     });
     
