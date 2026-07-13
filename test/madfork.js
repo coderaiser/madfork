@@ -165,7 +165,7 @@ test('madfork: console.log', async (t) => {
         readWorkspaces,
     });
     
-    const dir = '✅ /home/lib/workspaces.spec.js';
+    const dir = '🌿 /home/lib/workspaces.spec.js';
     
     t.calledWith(log, [dir]);
     t.end();
