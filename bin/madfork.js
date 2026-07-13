@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import {execSync} from 'node:child_process';
 import {readdirSync} from 'node:fs';
 import process from 'node:process';
