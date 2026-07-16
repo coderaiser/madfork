@@ -1,6 +1,6 @@
 import test, {stub} from 'supertape';
 import {tryToCatch} from 'try-to-catch';
-import {madfork} from '../lib/madfork.js';
+import {getRedrunBin, madfork} from '../lib/madfork.js';
 import info from '../package.json' with {
     type: 'json',
 };
@@ -33,7 +33,8 @@ test('madfork: execSync', async (t) => {
         readWorkspaces,
     });
     
-    const expected = ['redrun build', {
+    const redrunBin = await getRedrunBin();
+    const expected = [`${redrunBin} build`, {
         stdio: [
             0,
             1,
@@ -61,7 +62,9 @@ test('madfork: execSync: *', async (t) => {
         readWorkspaces,
     });
     
-    const expected = ['redrun build', {
+    const redrunBin = await getRedrunBin();
+    
+    const expected = [`${redrunBin} build`, {
         stdio: [
             0,
             1,
@@ -115,7 +118,9 @@ test('madfork: execSync: pattern', async (t) => {
         readWorkspaces,
     });
     
-    const expected = ['redrun build', {
+    const redrunBin = await getRedrunBin();
+    
+    const expected = [`${redrunBin} build`, {
         stdio: [
             0,
             1,
