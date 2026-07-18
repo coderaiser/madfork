@@ -1,6 +1,6 @@
 {
   "name": "madfork",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "run madrun in monorepo",
   "type": "module",
   "main": "bin/madfork.js",

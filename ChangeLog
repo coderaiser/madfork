@@ -1,3 +1,8 @@
+2026.07.18, v1.0.6
+
+fix:
+- 03cbf59 madfork: exit on error
+
 2026.07.16, v1.0.5
 
 fix:
