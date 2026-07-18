@@ -155,6 +155,29 @@ test('madfork: execSync: error', async (t) => {
     t.end();
 });
 
+test('madfork: execSync: error: exit', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/home',
+        ['lib'],
+    ]);
+    
+    const execSync = stub().throws(Error('hello'));
+    const logError = stub();
+    const exit = stub();
+    
+    const argv = ['ls'];
+    
+    await madfork(argv, {
+        execSync,
+        logError,
+        readWorkspaces,
+        exit,
+    });
+    
+    t.calledWith(exit, [1]);
+    t.end();
+});
+
 test('madfork: console.log', async (t) => {
     const readWorkspaces = stub().returns([
         '/home',
