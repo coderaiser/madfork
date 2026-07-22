@@ -1,3 +1,8 @@
+2026.07.23, v1.0.7
+
+fix:
+- dee56e9 madfork: exit 1 on error
+
 2026.07.18, v1.0.6
 
 fix:
