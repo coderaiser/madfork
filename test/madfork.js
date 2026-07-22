@@ -34,7 +34,38 @@ test('madfork: execSync', async (t) => {
     });
     
     const redrunBin = await getRedrunBin();
+    
     const expected = [`${redrunBin} build`, {
+        stdio: [
+            0,
+            1,
+            2,
+            'pipe',
+        ],
+        cwd: '/lib/workspaces.spec.js',
+    }];
+    
+    t.calledWith(execSync, expected);
+    t.end();
+});
+
+test('madfork: execSync: couple args', async (t) => {
+    const readWorkspaces = stub().returns([
+        '/',
+        ['lib'],
+    ]);
+    
+    const argv = ['test -- -f json-lines'];
+    const execSync = stub();
+    
+    await madfork(argv, {
+        execSync,
+        readWorkspaces,
+    });
+    
+    const redrunBin = await getRedrunBin();
+    
+    const expected = [`${redrunBin} test -- -f json-lines`, {
         stdio: [
             0,
             1,
